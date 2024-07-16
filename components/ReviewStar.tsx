@@ -1,8 +1,22 @@
+import { Endpoints } from "@/constants/endpoints";
+import { put } from "@/utils/api";
 import { IconCarambola } from "@tabler/icons-react-native";
 import React from "react";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
-export default function ReviewStar() {
+export default function ReviewStar({ rate, id }: { rate: number; id: number }) {
+  const [currentRate, setCurrentRate] = React.useState<number>(rate);
+
+  const handleRate = (rate: number) => {
+    setCurrentRate(rate);
+    put(
+      `${Endpoints.Book}/${id}`,
+      { rate },
+      () => {},
+      (error) => console.log(error)
+    );
+  };
+
   return (
     <View
       style={{
@@ -24,36 +38,17 @@ export default function ReviewStar() {
         elevation: 5,
       }}
     >
-      <IconCarambola
-        fill={"#F075AA"}
-        color="#F075AA"
-        size={17}
-        style={{ margin: 7 }}
-      />
-      <IconCarambola
-        fill={"#F075AA"}
-        color="#F075AA"
-        size={17}
-        style={{ margin: 7 }}
-      />
-      <IconCarambola
-        fill={"#F075AA"}
-        color="#F075AA"
-        size={17}
-        style={{ margin: 7 }}
-      />
-      <IconCarambola
-        fill={"#F075AA"}
-        color="#F075AA"
-        size={17}
-        style={{ margin: 7 }}
-      />
-      <IconCarambola
-        fill={"#F075AA"}
-        color="#F075AA"
-        size={17}
-        style={{ margin: 7 }}
-      />
+      {[1, 2, 3, 4, 5].map((i) => (
+        <TouchableOpacity onPress={() => handleRate(i)} key={i}>
+          <IconCarambola
+            fill={i <= currentRate ? "#F075AA" : "#fff"}
+            // color={i <= currentRate ? "#F075AA" : "#F075AA"}
+            color="#F075AA"
+            size={17}
+            style={{ margin: 7 }}
+          />
+        </TouchableOpacity>
+      ))}
     </View>
   );
 }
