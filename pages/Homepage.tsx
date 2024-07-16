@@ -1,30 +1,31 @@
+import { AppTextField } from "@/components/common/TextIField";
 import NewReleaseBook from "@/components/NewReleaseBook";
-import { TextField } from "@/components/Themed";
+import { View } from "@/components/Themed";
+import AppScrollView from "@/layouts/AppScrollView";
+import { useAppSelector } from "@/store/hooks";
 import { IconBlockquote, IconSearch } from "@tabler/icons-react-native";
 import React from "react";
-import { View } from "react-native";
 import { Avatar, Text, TextInput } from "react-native-paper";
 
-export default function Homepage() {
+export default function Homepage({ navigation }: { navigation: any }) {
+  const { userReducer } = useAppSelector((state) => state);
+  const { information } = userReducer;
+
   return (
-    <View
-      style={{
-        padding: 20,
-        gap: 20,
-      }}
-    >
+    <AppScrollView isMain>
       <View
         style={{
           display: "flex",
           flexDirection: "row",
           gap: 10,
           alignItems: "center",
+          marginBottom: 24,
         }}
       >
         <Avatar.Image
           size={50}
           source={{
-            uri: "https://i1.sndcdn.com/avatars-TkhhwnAkP6V8igZy-6u2g0w-t240x240.jpg",
+            uri: information?.profilePicture,
           }}
         />
         <View style={{ flex: 1 }}>
@@ -33,19 +34,17 @@ export default function Homepage() {
             What do you want to read ?
           </Text>
         </View>
-        <IconBlockquote size={30} />
+        <IconBlockquote size={30} color="#4F8EF7" />
       </View>
-      <View>
-        <TextField
-          mode="outlined"
-          placeholder="Search"
-          left={<TextInput.Icon icon={() => <IconSearch />} />}
-          style={{
-            height: 40,
-          }}
-        />
-      </View>
+      <AppTextField
+        mode="outlined"
+        placeholder="Search"
+        left={<TextInput.Icon icon={() => <IconSearch />} />}
+        style={{
+          height: 40,
+        }}
+      />
       <NewReleaseBook />
-    </View>
+    </AppScrollView>
   );
 }

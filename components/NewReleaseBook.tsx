@@ -4,12 +4,22 @@ import { Text } from "react-native-paper";
 import ReviewStar from "./ReviewStar";
 
 export default function NewReleaseBook() {
+  const apiUrl = process.env.EXPO_PUBLIC_API_URL;
+  const [books, setBooks] = React.useState<TBook[]>([]);
+  React.useEffect(() => {
+    (async () => {
+      const res = await fetch(`${apiUrl}/book`);
+      const data = await res.json();
+      setBooks(data);
+    })();
+  }, []);
   return (
     <View
       style={{
         display: "flex",
         flexDirection: "row",
         gap: 10,
+        marginTop: 24,
         // alignItems: "stretch",
       }}
     >
@@ -26,7 +36,7 @@ export default function NewReleaseBook() {
         </Text>
         <View>
           <Text style={{ color: "blue" }}>NAVAL RAVIKANT</Text>
-          <Text style={{ color: "blue" }}>Để thịnh vượng và hạnh phúc</Text>
+          <Text style={{ color: "blue" }}>{books[0]?.title}</Text>
           <Text style={{ marginBottom: 10 }}>By ERIC JOGENSON</Text>
           <Text>Thể loại: Phát triển cá nhân, Kinh doanh, Triết học</Text>
         </View>
@@ -39,7 +49,7 @@ export default function NewReleaseBook() {
       >
         <Image
           source={{
-            uri: "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1320548114i/6280379.jpg",
+            uri: books[0]?.image,
           }}
           style={{
             position: "absolute",

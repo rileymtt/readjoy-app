@@ -1,56 +1,49 @@
-import BookList from "@/pages/BookList";
-import Homepage from "@/pages/Homepage";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { useColorScheme } from "@/hooks/useColorScheme";
+import { store } from "@/store";
 import {
-  IconBook,
-  IconHome,
-  IconSearch,
-  IconUser,
-} from "@tabler/icons-react-native";
-import * as React from "react";
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { StatusBar } from "react-native";
+import FlashMessage from "react-native-flash-message";
+import "react-native-reanimated";
+import { Provider } from "react-redux";
+import App from "./_app";
 
-const Tab = createBottomTabNavigator();
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
 
-function MyTabs() {
+export default function RootLayout() {
+  const colorScheme = useColorScheme();
+  const [loaded] = useFonts({
+    SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
+  });
+
+  useEffect(() => {
+    if (loaded) {
+      SplashScreen.hideAsync();
+    }
+    console.log("loaded", loaded);
+  }, [loaded]);
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
-    <Tab.Navigator>
-      <Tab.Screen
-        name="Home"
-        options={{
-          tabBarIcon: ({ color }) => <IconHome size={20} color={color} />,
-        }}
-        component={Homepage}
-      />
-      <Tab.Screen
-        name="My Books"
-        options={{
-          tabBarIcon: ({ color }) => <IconBook size={20} color={color} />,
-        }}
-        component={BookList}
-      />
-      <Tab.Screen
-        name="Search"
-        options={{
-          tabBarIcon: ({ color }) => <IconSearch size={20} color={color} />,
-        }}
-        component={BookList}
-      />
-      <Tab.Screen
-        name="Profile"
-        options={{
-          tabBarIcon: ({ color }) => <IconUser size={20} color={color} />,
-        }}
-        component={BookList}
-      />
-    </Tab.Navigator>
-  );
-}
-
-export default function App() {
-  return (
-    <NavigationContainer independent={true}>
-      <MyTabs />
-    </NavigationContainer>
+    <Provider store={store}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <StatusBar
+          barStyle="dark-content" // Use default bar style
+          hidden={false} // Ensure the status bar is visible
+        />
+        <App />
+        <FlashMessage />
+      </ThemeProvider>
+    </Provider>
   );
 }
