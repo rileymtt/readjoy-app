@@ -11,6 +11,7 @@ type TBook = {
   image: string;
   images: string[];
   rate: number;
+  status: number;
   createdAt: Date;
   updatedAt: Date;
 };

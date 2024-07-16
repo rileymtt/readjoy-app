@@ -1,4 +1,5 @@
 import AppBookImage from "@/components/AppBookImage";
+import BookStatus from "@/components/BookStatus";
 import FlexBox from "@/components/common/FlexBox";
 import ReviewStar from "@/components/ReviewStar";
 import { Text } from "@/components/Themed";
@@ -72,6 +73,7 @@ export default function BookDetailPage({ route, navigation }: Props) {
       <Text>{data.author}</Text>
       <Text>{data.description}</Text>
       <ReviewStar id={data.id} rate={data.rate} />
+      <BookStatus />
     </AppScrollView>
   );
 }
