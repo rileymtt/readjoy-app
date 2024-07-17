@@ -1,11 +1,10 @@
-import AppleStyleSwipeableRow, {
-  ActionButtonProps,
-} from "@/components/AppleStyleSwipeableRow";
 import FlexBox from "@/components/common/FlexBox";
 import { Endpoints } from "@/constants/endpoints";
 import { EBookStatus } from "@/constants/enums";
-import { BookStatusColors, BookStatusIcons } from "@/constants/icons";
+import { BookStatusIcons } from "@/constants/icons";
 import { RootStackParamList } from "@/routes/config.routes";
+import { BookReducerHelper } from "@/store/book/book-reducer";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get } from "@/utils/api";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { IconCarambola } from "@tabler/icons-react-native";
@@ -28,32 +27,9 @@ interface ItemProps {
   onPress: () => void;
 }
 
-const width = 180;
-
 const Item: React.FC<ItemProps> = ({ item, onPress }) => {
-  const rightActions: ActionButtonProps[] = [
-    {
-      text: "More",
-      color: "#C8C7CD",
-      x: width * 3,
-      onPress: () => console.log("More action pressed"),
-    },
-    {
-      text: "Flag",
-      color: "#ffab00",
-      x: width * 2,
-      onPress: () => console.log("Flag action pressed"),
-    },
-    {
-      text: "Delete",
-      color: "#dd2c00",
-      x: width,
-      onPress: () => console.log("Delete action pressed"),
-    },
-  ];
-
   return (
-    <AppleStyleSwipeableRow rightActions={rightActions}>
+    <React.Fragment>
       <TouchableOpacity onPress={onPress} style={styles.item}>
         <FlexBox>
           <Image
@@ -70,7 +46,7 @@ const Item: React.FC<ItemProps> = ({ item, onPress }) => {
             <Text style={[styles.text, styles.author]}>{item.author}</Text>
             {item.rate ? (
               <FlexBox align="center">
-                <Text>{item.rate}</Text>
+                <Text style={styles.review}>{item.rate}</Text>
                 <IconCarambola
                   fill="#F075AA"
                   color="#F075AA"
@@ -87,10 +63,14 @@ const Item: React.FC<ItemProps> = ({ item, onPress }) => {
                 icon={() => (
                   <Icon name={BookStatusIcons[item.status]} size={18} />
                 )}
-                style={{
-                  backgroundColor: BookStatusColors[item.status],
-                }}
+                style={
+                  {
+                    // borderColor: "#F075AA",
+                    // backgroundColor:"transparent"
+                  }
+                }
                 compact
+                mode="outlined"
               >
                 {EBookStatus[item.status]}
               </Chip>
@@ -99,7 +79,7 @@ const Item: React.FC<ItemProps> = ({ item, onPress }) => {
         </FlexBox>
       </TouchableOpacity>
       <Divider />
-    </AppleStyleSwipeableRow>
+    </React.Fragment>
   );
 };
 
@@ -110,17 +90,18 @@ export type Props = NativeStackScreenProps<
 >;
 
 const MyBookPage: React.FC<Props> = ({ navigation }) => {
-  const [books, setBooks] = React.useState<TBook[]>([]);
-  const [selectedId, setSelectedId] = React.useState<number>();
   const [refreshing, setRefreshing] = React.useState<boolean>(true);
+  const dispatch = useAppDispatch();
+  const bookStore = useAppSelector((state) => state.bookReducer);
+  const { myBooks } = bookStore;
 
   React.useEffect(() => {
     if (refreshing) {
       get(
         Endpoints.Book,
         (data) => {
-          setBooks(data);
           setRefreshing(false);
+          dispatch(BookReducerHelper.Actions.addBooksAction(data));
         },
         (error) => {
           console.log(error);
@@ -141,9 +122,8 @@ const MyBookPage: React.FC<Props> = ({ navigation }) => {
 
   return (
     <FlatList
-      data={books}
+      data={myBooks}
       renderItem={renderItem}
-      extraData={selectedId}
       style={styles.container}
       keyExtractor={(item) => item.id.toString()}
       refreshControl={
@@ -170,6 +150,10 @@ const styles = StyleSheet.create({
   author: {
     fontSize: 12,
     fontStyle: "italic",
+    marginTop: 3,
+  },
+  review: {
+    fontSize: 12,
   },
   description: {
     fontSize: 12,
@@ -178,7 +162,6 @@ const styles = StyleSheet.create({
   },
   text: {},
   right: {
-    // paddingHorizontal: 12,
     padding: 10,
   },
   rightAction: {

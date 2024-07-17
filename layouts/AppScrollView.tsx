@@ -1,7 +1,7 @@
-import { View } from "@/components/Themed";
 import React from "react";
 import {
   RefreshControl,
+  SafeAreaView,
   ScrollView,
   StyleSheet,
   ViewProps,
@@ -15,7 +15,7 @@ export default function AppScrollView(
   }
 ) {
   return (
-    <View style={[styles.container]}>
+    <SafeAreaView style={[styles.container]}>
       <ScrollView
         style={styles.scrollView}
         refreshControl={
@@ -27,11 +27,9 @@ export default function AppScrollView(
           ) : undefined
         }
       >
-        {/* <View style={props.isMain ? styles.mainSpace : styles.subSpace} /> */}
         {props.children}
-        {/* <View style={props.isMain ? styles.mainSpace : styles.subSpace} /> */}
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -41,7 +39,8 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingHorizontal: 20,
-    paddingVertical: 20,
+    // paddingVertical: 20,
+    marginVertical: 20,
   },
   mainSpace: {
     height: 70,

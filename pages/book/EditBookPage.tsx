@@ -5,6 +5,8 @@ import { Endpoints } from "@/constants/endpoints";
 import { uploadImage } from "@/helpers/upload-images";
 import AppScrollView from "@/layouts/AppScrollView";
 import { RootStackParamList } from "@/routes/config.routes";
+import { BookReducerHelper } from "@/store/book/book-reducer";
+import { useAppDispatch } from "@/store/hooks";
 import { put } from "@/utils/api";
 import MessageBox from "@/utils/MessageBox";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -36,6 +38,7 @@ function UpdateBookPage({ navigation, route }: Props) {
   const [extractedText, setExtractedText] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [result, setResult] = useState<MlkitOcrResult>();
+  const dispatch = useAppDispatch();
   const {
     handleSubmit,
     control,
@@ -121,6 +124,12 @@ function UpdateBookPage({ navigation, route }: Props) {
       data.image = updateImage.data.link;
     }
     setLoading(true);
+    dispatch(
+      BookReducerHelper.Actions.updateBookAction({
+        id: route.params.book.id,
+        ...data,
+      })
+    );
     put(
       Endpoints.Book + "/" + route.params.book.id,
       data,

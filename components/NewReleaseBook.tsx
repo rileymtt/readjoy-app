@@ -40,7 +40,7 @@ export default function NewReleaseBook() {
           <Text style={{ marginBottom: 10 }}>By ERIC JOGENSON</Text>
           <Text>Thể loại: Phát triển cá nhân, Kinh doanh, Triết học</Text>
         </View>
-        <ReviewStar />
+        {/* <ReviewStar /> */}
       </View>
       <View
         style={{

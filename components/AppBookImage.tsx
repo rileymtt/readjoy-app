@@ -8,7 +8,10 @@ import {
 import * as MediaLibrary from "expo-media-library";
 import React from "react";
 import { Alert, Image, StyleSheet, TouchableOpacity } from "react-native";
-import { View } from "./Themed";
+import { Divider } from "react-native-paper";
+import BottomDrawer from "./BottomDrawer";
+import CameraScreen from "./CameraPicker";
+import { Text, View } from "./Themed";
 
 type TProps = {
   defaultImage?: string;
@@ -22,13 +25,14 @@ export default function AppBookImage(props: TProps) {
   } as ImagePickerAsset);
   const theme = useTheme();
   const [loading, setLoading] = React.useState(true);
+  const [isOpenDrawer, setIsOpenDrawer] = React.useState(false);
+  const [isOpenCamera, setIsOpenCamera] = React.useState(false);
 
   const handleLoad = () => {
     setLoading(false);
   };
 
   const requestPhotoPermission = async () => {
-    if (!props.canEdit) return;
     const { status } = await MediaLibrary.requestPermissionsAsync();
     if (status !== "granted") {
       Alert.alert(
@@ -58,28 +62,61 @@ export default function AppBookImage(props: TProps) {
   };
 
   return (
-    <TouchableOpacity onPress={requestPhotoPermission}>
-      <View style={styles.container}>
-        {image.uri ? (
-          <React.Fragment>
-            {/* {loading && (
-              <ActivityIndicator style={StyleSheet.absoluteFill} size="large" />
-            )} */}
-            <Image
-              source={{ uri: image.uri }}
-              style={[
-                styles.image,
-                // { display: loading ? "none" : "flex" }
-              ]}
-              onLoadEnd={handleLoad}
-              onError={() => setLoading(false)}
-            />
-          </React.Fragment>
-        ) : (
-          <IconCamera size={30} color={theme.colors.text} />
-        )}
-      </View>
-    </TouchableOpacity>
+    <>
+      <TouchableOpacity
+        onPress={() => {
+          if (props.canEdit) {
+            setIsOpenDrawer(true);
+          }
+        }}
+      >
+        <View style={styles.container}>
+          {image.uri ? (
+            <React.Fragment>
+              <Image
+                source={{ uri: image.uri }}
+                style={[styles.image]}
+                onLoadEnd={handleLoad}
+                onError={() => setLoading(false)}
+              />
+            </React.Fragment>
+          ) : (
+            <IconCamera size={30} color={theme.colors.text} />
+          )}
+        </View>
+      </TouchableOpacity>
+      <BottomDrawer
+        isOpen={isOpenDrawer}
+        onClose={() => setIsOpenDrawer(false)}
+      >
+        <View>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={requestPhotoPermission}
+          >
+            <Text>Choose from Gallery</Text>
+          </TouchableOpacity>
+          <Divider />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              setIsOpenCamera(true);
+              setIsOpenDrawer(false);
+            }}
+          >
+            <Text>Take a Photo</Text>
+          </TouchableOpacity>
+        </View>
+      </BottomDrawer>
+      <CameraScreen
+        onSuccess={(e) => {
+          setImage(e);
+          setIsOpenCamera(false);
+        }}
+        isOpen={isOpenCamera}
+        onClose={() => setIsOpenCamera(false)}
+      />
+    </>
   );
 }
 
@@ -104,5 +141,8 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     borderRadius: 16,
+  },
+  button: {
+    paddingVertical: 12,
   },
 });

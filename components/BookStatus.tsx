@@ -1,6 +1,11 @@
+import { Endpoints } from "@/constants/endpoints";
 import { BookStatusIcons } from "@/constants/icons";
+import { BookReducerHelper } from "@/store/book/book-reducer";
+import { useAppDispatch } from "@/store/hooks";
+import { put } from "@/utils/api";
+import MessageBox from "@/utils/MessageBox";
 import * as React from "react";
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { SegmentedButtons } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
@@ -11,8 +16,26 @@ const CustomIcon = ({ icon, label }: { icon: string; label: string }) => (
   </View>
 );
 
-const BookStatus = () => {
-  const [value, setValue] = React.useState("");
+const BookStatus = ({ book }: { book: TBook }) => {
+  const [value, setValue] = React.useState(book.status.toString());
+  const dispatch = useAppDispatch();
+
+  React.useEffect(() => {
+    dispatch(
+      BookReducerHelper.Actions.updateBookAction({
+        id: book.id,
+        status: Number(value),
+      })
+    );
+    put(
+      `${Endpoints.Book}/${book.id}`,
+      { status: Number(value) },
+      () => {},
+      (error) => {
+        MessageBox.showError(error.message);
+      }
+    );
+  }, [value]);
 
   const buttons = [
     {

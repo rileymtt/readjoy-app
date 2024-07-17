@@ -1,0 +1,3 @@
+type TBookInitialState = {
+  myBooks: TBook[];
+};

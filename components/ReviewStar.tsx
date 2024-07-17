@@ -1,16 +1,24 @@
 import { Endpoints } from "@/constants/endpoints";
+import { BookReducerHelper } from "@/store/book/book-reducer";
+import { useAppDispatch } from "@/store/hooks";
 import { put } from "@/utils/api";
 import { IconCarambola } from "@tabler/icons-react-native";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 
-export default function ReviewStar({ rate, id }: { rate: number; id: number }) {
-  const [currentRate, setCurrentRate] = React.useState<number>(rate);
+export default function ReviewStar({ book }: { book: TBook }) {
+  const currentRate = React.useMemo(() => book.rate, [book]);
+  const dispatch = useAppDispatch();
 
   const handleRate = (rate: number) => {
-    setCurrentRate(rate);
+    dispatch(
+      BookReducerHelper.Actions.updateBookAction({
+        id: book.id,
+        rate,
+      })
+    );
     put(
-      `${Endpoints.Book}/${id}`,
+      `${Endpoints.Book}/${book.id}`,
       { rate },
       () => {},
       (error) => console.log(error)
