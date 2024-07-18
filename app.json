@@ -1,9 +1,9 @@
 {
   "expo": {
-    "name": "Read Joy",
-    "displayName": "Read Joy",
+    "name": "ReadJoy",
+    "displayName": "ReadJoy",
     "slug": "readjoy",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",

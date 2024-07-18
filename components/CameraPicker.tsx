@@ -12,8 +12,7 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { IconButton } from "react-native-paper";
 import Animated, {
@@ -57,11 +56,13 @@ function CameraScreen({
   });
 
   useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
+    if (isOpen) {
+      (async () => {
+        const { status } = await Camera.requestCameraPermissionsAsync();
+        setHasPermission(status === "granted");
+      })();
+    }
+  }, [isOpen]);
 
   const handleCaptureImage = async () => {
     if (cameraRef.current) {

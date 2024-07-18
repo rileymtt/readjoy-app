@@ -7,7 +7,7 @@ import { IconBlockquote, IconSearch } from "@tabler/icons-react-native";
 import React from "react";
 import { Avatar, Text, TextInput } from "react-native-paper";
 
-export default function Homepage({ navigation }: { navigation: any }) {
+export default function Homepage() {
   const { userReducer } = useAppSelector((state) => state);
   const { information } = userReducer;
 

@@ -5,7 +5,6 @@ import { useAppSelector } from "@/store/hooks";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { IconBook, IconHome, IconPlus } from "@tabler/icons-react-native";
-import { BlurView } from "expo-blur";
 import { TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
 import { RootStackParamList } from "./config.routes";
@@ -64,7 +63,7 @@ function BottomTabRoutes({
         tabBarButton: (props) => <TouchableOpacity {...props} />,
       }}
     >
-      {bottomConfig.map((item) => (
+      {bottomConfig.map((item, key) => (
         <Tab.Screen
           name={item.name}
           options={{
@@ -73,6 +72,7 @@ function BottomTabRoutes({
             title: item.title,
           }}
           component={item.component}
+          key={key}
         />
       ))}
       <Tab.Screen
@@ -94,14 +94,3 @@ function BottomTabRoutes({
 }
 
 export default BottomTabRoutes;
-
-export const CustomBlurView = () => (
-  <BlurView
-    intensity={30}
-    tint="light"
-    style={{
-      backgroundColor: "rgba(255, 255, 255, 0.1)",
-      flex: 1,
-    }}
-  />
-);

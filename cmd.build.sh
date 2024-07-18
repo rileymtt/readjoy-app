@@ -10,11 +10,11 @@ nvm use 18.20
 sudo rm -rf ~/Library/Developer/Xcode/DerivedData/*
 sudo rm -rf ~/Library/Caches/org.swift.swiftpm
 sudo rm -rf ~/Library/org.swift.swiftpm
-sudo rm -rf node_modules
+# sudo rm -rf node_modules
 sudo rm -rf ios/Pods
 sudo rm -rf ios/Podfile.lock
-yarn install
+# yarn install
 cd ios
 NO_FLIPPER=1 arch -x86_64 pod install
 cd ..
-npx expo run:ios
+yarn ios

@@ -12,5 +12,3 @@ export let AppConfig: { WS: string; API: string; ETHERSCAN_LINK: string } = {
     : `https://apicommunity.feliciastation.com/api/v1`,
   ETHERSCAN_LINK: "",
 };
-
-console.log(AppConfig);
