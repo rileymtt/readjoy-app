@@ -31,38 +31,42 @@ export default function ProfilePage({ navigation }: Props) {
   if (!information) return null;
   return (
     <AppScrollView>
-      <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
-        <FlexBox justify="space-between" align="center">
-          <FlexBox style={{ gap: 16 }} align="center">
-            <Avatar.Image
-              source={{
-                uri: information.profilePicture,
-              }}
-            />
-            <View>
-              <Text
-                style={[
-                  {
-                    fontWeight: "bold",
-                  },
-                ]}
-              >
-                {information.email}
-              </Text>
-              <Text>Username: {information.displayName}</Text>
-              <Text>
-                Joined: {moment(information.createdAt).format("YYYY-MM-DD")}
-              </Text>
-            </View>
+      <View style={styles.container}>
+        <TouchableOpacity onPress={() => navigation.navigate("EditProfile")}>
+          <FlexBox justify="space-between" align="center">
+            <FlexBox style={{ gap: 16 }} align="center">
+              <Avatar.Image
+                source={{
+                  uri: information.profilePicture,
+                }}
+              />
+              <View>
+                <Text
+                  style={[
+                    {
+                      fontWeight: "bold",
+                    },
+                  ]}
+                >
+                  {information.email}
+                </Text>
+                <Text>Username: {information.displayName}</Text>
+                <Text>
+                  Joined: {moment(information.createdAt).format("YYYY-MM-DD")}
+                </Text>
+              </View>
+            </FlexBox>
+            <Icon source={"chevron-right"} size={30} />
           </FlexBox>
-          <Icon source={"chevron-right"} size={30} />
-        </FlexBox>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogout} style={{ marginTop: 24 }}>
-        <Text>Logout</Text>
-      </TouchableOpacity>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleLogout} style={{ marginTop: 24 }}>
+          <Text>Logout</Text>
+        </TouchableOpacity>
+      </View>
     </AppScrollView>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: { marginTop: 24 },
+});

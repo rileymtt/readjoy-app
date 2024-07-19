@@ -1,20 +1,16 @@
+import { CustomPaperColors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { store } from "@/store";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import { StatusBar } from "react-native";
 import FlashMessage from "react-native-flash-message";
+import { DefaultTheme, PaperProvider } from "react-native-paper";
 import "react-native-reanimated";
 import { Provider } from "react-redux";
 import App from "./_app";
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -34,16 +30,22 @@ export default function RootLayout() {
     return null;
   }
 
+  const theme = {
+    ...DefaultTheme,
+    colors:
+      colorScheme === "dark" ? CustomPaperColors.dark : CustomPaperColors.light,
+  };
+
   return (
     <Provider store={store}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <PaperProvider theme={theme}>
         <StatusBar
           barStyle="dark-content" // Use default bar style
           hidden={false} // Ensure the status bar is visible
         />
         <App />
         <FlashMessage />
-      </ThemeProvider>
+      </PaperProvider>
     </Provider>
   );
 }

@@ -2,7 +2,7 @@ import AppBookImage from "@/components/AppBookImage";
 import BookStatus from "@/components/BookStatus";
 import FlexBox from "@/components/common/FlexBox";
 import ReviewStar from "@/components/ReviewStar";
-import { Text } from "@/components/Themed";
+import { Text, View } from "@/components/Themed";
 import { Endpoints } from "@/constants/endpoints";
 import AppScrollView from "@/layouts/AppScrollView";
 import { RootStackParamList } from "@/routes/config.routes";
@@ -13,6 +13,7 @@ import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { IconEdit, IconTrash } from "@tabler/icons-react-native";
 import React from "react";
 import { StyleSheet, TouchableOpacity } from "react-native";
+import { useTheme } from "react-native-paper";
 
 export type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -24,6 +25,7 @@ export default function BookDetailPage({ route, navigation }: Props) {
   const [data, setData] = React.useState<TBook>();
   const bookStore = useAppSelector((state) => state.bookReducer);
   const { myBooks } = bookStore;
+  const { colors } = useTheme();
 
   React.useEffect(() => {
     const find = myBooks.find((book) => book.id === route.params.id);
@@ -55,10 +57,10 @@ export default function BookDetailPage({ route, navigation }: Props) {
       headerRight: () => (
         <FlexBox style={{ marginRight: 20, gap: 8 }}>
           <TouchableOpacity onPress={handleGoToEdit}>
-            <IconEdit color={"#4F8EF7"} />
+            <IconEdit color={colors.primary} />
           </TouchableOpacity>
           <TouchableOpacity onPress={handleGoToDelete}>
-            <IconTrash color={"#4F8EF7"} />
+            <IconTrash color={colors.primary} />
           </TouchableOpacity>
         </FlexBox>
       ),
@@ -68,17 +70,22 @@ export default function BookDetailPage({ route, navigation }: Props) {
   if (!data) return null;
   return (
     <AppScrollView isMain>
-      <AppBookImage defaultImage={data.image} />
-      <Text style={styles.title}>{data.title}</Text>
-      <Text style={styles.author}>{data.author}</Text>
-      <Text style={styles.description}>{data.description}</Text>
-      <ReviewStar book={data} />
-      <BookStatus book={data} />
+      <View style={styles.container}>
+        <AppBookImage defaultImage={data.image} />
+        <Text style={styles.title}>{data.title}</Text>
+        <Text style={styles.author}>{data.author}</Text>
+        <Text style={styles.description}>{data.description}</Text>
+        <ReviewStar book={data} />
+        <BookStatus book={data} />
+      </View>
     </AppScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 24,
+  },
   image: {
     width: 200,
     height: 300,

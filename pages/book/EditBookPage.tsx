@@ -1,6 +1,6 @@
 import AppBookImage from "@/components/AppBookImage";
 import { AppTextField } from "@/components/common/TextIField";
-import { Text } from "@/components/Themed";
+import LoadingModal from "@/components/LoadingModal";
 import { Endpoints } from "@/constants/endpoints";
 import { uploadImage } from "@/helpers/upload-images";
 import AppScrollView from "@/layouts/AppScrollView";
@@ -16,7 +16,7 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import MlkitOcr, { MlkitOcrResult } from "react-native-mlkit-ocr";
-import { TextInput } from "react-native-paper";
+import { Text, TextInput, useTheme } from "react-native-paper";
 
 type FormValues = {
   title: string;
@@ -51,6 +51,7 @@ function UpdateBookPage({ navigation, route }: Props) {
       description: route.params.book.description,
     },
   });
+  const { colors } = useTheme();
 
   React.useEffect(() => {
     navigation.setOptions({
@@ -63,8 +64,10 @@ function UpdateBookPage({ navigation, route }: Props) {
         >
           <Text
             style={{
-              color: loading ? "gray" : "#4F8EF7",
+              color: colors.primary,
+              fontWeight: 500,
             }}
+            variant="bodyLarge"
           >
             Save
           </Text>
@@ -147,11 +150,8 @@ function UpdateBookPage({ navigation, route }: Props) {
 
   return (
     <AppScrollView isMain>
-      <View
-        style={{
-          gap: 24,
-        }}
-      >
+      <View style={styles.container}>
+        {loading && <LoadingModal />}
         <AppBookImage
           defaultImage={imageUri.uri}
           canEdit
@@ -223,6 +223,10 @@ function UpdateBookPage({ navigation, route }: Props) {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    marginTop: 24,
+    gap: 24,
+  },
   inputContainer: {},
   errorText: {
     color: "red",

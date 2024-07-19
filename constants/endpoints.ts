@@ -32,4 +32,6 @@ export const Endpoints = {
   Login: `/user/login`,
   Book: `/book`,
   Profile: `/user/profile`,
+  Quote: `/quote`,
+  Popular: `/book/popular`,
 };

@@ -39,8 +39,6 @@ const styles = StyleSheet.create({
   },
   scrollView: {
     paddingHorizontal: 20,
-    // paddingVertical: 20,
-    marginVertical: 20,
   },
   mainSpace: {
     height: 70,

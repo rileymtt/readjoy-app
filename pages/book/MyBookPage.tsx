@@ -1,13 +1,14 @@
 import FlexBox from "@/components/common/FlexBox";
+import ReviewStarNumber from "@/components/ReviewStarNumber";
 import { Endpoints } from "@/constants/endpoints";
 import { EBookStatus } from "@/constants/enums";
 import { BookStatusIcons } from "@/constants/icons";
 import { RootStackParamList } from "@/routes/config.routes";
+import { getBooks } from "@/store/book/book-actions";
 import { BookReducerHelper } from "@/store/book/book-reducer";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { get } from "@/utils/api";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { IconCarambola } from "@tabler/icons-react-native";
 import React from "react";
 import {
   FlatList,
@@ -35,26 +36,15 @@ const Item: React.FC<ItemProps> = ({ item, onPress }) => {
           <Image
             source={{
               uri: item.image,
-              height: 180,
-              width: 120,
             }}
+            style={styles.image}
           />
           <View style={[styles.right, { flex: 1 }]}>
             <Text style={[styles.title, styles.text]} numberOfLines={2}>
               {item.title}
             </Text>
             <Text style={[styles.text, styles.author]}>{item.author}</Text>
-            {item.rate ? (
-              <FlexBox align="center">
-                <Text style={styles.review}>{item.rate}</Text>
-                <IconCarambola
-                  fill="#F075AA"
-                  color="#F075AA"
-                  size={12}
-                  style={{ marginLeft: 2 }}
-                />
-              </FlexBox>
-            ) : null}
+            {item.rate ? <ReviewStarNumber rate={item.rate} /> : null}
             <Text style={[styles.text, styles.description]} numberOfLines={3}>
               {item.description}
             </Text>
@@ -63,12 +53,6 @@ const Item: React.FC<ItemProps> = ({ item, onPress }) => {
                 icon={() => (
                   <Icon name={BookStatusIcons[item.status]} size={18} />
                 )}
-                style={
-                  {
-                    // borderColor: "#F075AA",
-                    // backgroundColor:"transparent"
-                  }
-                }
                 compact
                 mode="outlined"
               >
@@ -97,17 +81,8 @@ const MyBookPage: React.FC<Props> = ({ navigation }) => {
 
   React.useEffect(() => {
     if (refreshing) {
-      get(
-        Endpoints.Book,
-        (data) => {
-          setRefreshing(false);
-          dispatch(BookReducerHelper.Actions.addBooksAction(data));
-        },
-        (error) => {
-          console.log(error);
-          setRefreshing(false);
-        }
-      );
+      dispatch(BookReducerHelper.Actions.getBooks());
+      setRefreshing(false);
     }
   }, [refreshing]);
 
@@ -139,6 +114,12 @@ const MyBookPage: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingTop: 24,
+    paddingBottom: 24,
+  },
+  image: {
+    height: 180,
+    width: 120,
   },
   item: {
     paddingHorizontal: 10,
@@ -162,7 +143,7 @@ const styles = StyleSheet.create({
   },
   text: {},
   right: {
-    padding: 10,
+    paddingHorizontal: 10,
   },
   rightAction: {
     backgroundColor: "#dd2c00",

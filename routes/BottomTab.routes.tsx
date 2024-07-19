@@ -6,7 +6,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { IconBook, IconHome, IconPlus } from "@tabler/icons-react-native";
 import { TouchableOpacity } from "react-native";
-import { Avatar } from "react-native-paper";
+import { Avatar, useTheme } from "react-native-paper";
 import { RootStackParamList } from "./config.routes";
 
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -18,6 +18,7 @@ function BottomTabRoutes({
 }) {
   const user = useAppSelector((state) => state.userReducer);
   const { information } = user;
+  const { colors } = useTheme();
 
   const bottomConfig: {
     name: keyof RootStackParamList;
@@ -44,10 +45,9 @@ function BottomTabRoutes({
           }}
           style={{
             padding: 10,
-            borderRadius: 50,
           }}
         >
-          <IconPlus size={20} color={"#4F8EF7"} />
+          <IconPlus size={20} color={colors.primary} />
         </TouchableOpacity>
       ),
     },
@@ -56,11 +56,12 @@ function BottomTabRoutes({
   return (
     <Tab.Navigator
       screenOptions={{
-        headerTitleAlign: "left",
+        headerTitleAlign: "center",
         headerTitleStyle: {
           fontWeight: "bold",
         },
         tabBarButton: (props) => <TouchableOpacity {...props} />,
+        tabBarActiveTintColor: colors.primary,
       }}
     >
       {bottomConfig.map((item, key) => (
@@ -79,7 +80,7 @@ function BottomTabRoutes({
         name="Profile"
         component={ProfilePage}
         options={{
-          tabBarIcon: ({ color }) => (
+          tabBarIcon: () => (
             <Avatar.Image
               source={{
                 uri: information?.profilePicture,

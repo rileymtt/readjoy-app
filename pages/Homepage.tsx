@@ -3,13 +3,14 @@ import NewReleaseBook from "@/components/NewReleaseBook";
 import { View } from "@/components/Themed";
 import AppScrollView from "@/layouts/AppScrollView";
 import { useAppSelector } from "@/store/hooks";
-import { IconBlockquote, IconSearch } from "@tabler/icons-react-native";
+import { IconBlockquote } from "@tabler/icons-react-native";
 import React from "react";
-import { Avatar, Text, TextInput } from "react-native-paper";
+import { Avatar, Text, TextInput, useTheme } from "react-native-paper";
 
 export default function Homepage() {
-  const { userReducer } = useAppSelector((state) => state);
+  const userReducer = useAppSelector((state) => state.userReducer);
   const { information } = userReducer;
+  const { colors } = useTheme();
 
   return (
     <AppScrollView isMain>
@@ -19,7 +20,7 @@ export default function Homepage() {
           flexDirection: "row",
           gap: 10,
           alignItems: "center",
-          marginBottom: 24,
+          marginVertical: 24,
         }}
       >
         <Avatar.Image
@@ -34,15 +35,16 @@ export default function Homepage() {
             What do you want to read ?
           </Text>
         </View>
-        <IconBlockquote size={30} color="#4F8EF7" />
+        <IconBlockquote size={30} color={colors.primary} />
       </View>
       <AppTextField
         mode="outlined"
         placeholder="Search"
-        left={<TextInput.Icon icon={() => <IconSearch />} />}
+        left={<TextInput.Icon icon="magnify" />}
         style={{
           height: 40,
         }}
+        value=""
       />
       <NewReleaseBook />
     </AppScrollView>

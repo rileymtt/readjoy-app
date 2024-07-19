@@ -8,7 +8,6 @@ export function uploadImage(
 ): Promise<{ data: { link: string } }> {
   return new Promise((resolve, reject) => {
     if (!file) return null;
-
     var body: any = new FormData();
 
     body.append("images", {
@@ -24,7 +23,6 @@ export function uploadImage(
         resolve({ data: { link: data[0] } });
       },
       (error) => {
-        console.log(error);
         reject(error);
       }
     );

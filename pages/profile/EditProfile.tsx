@@ -1,7 +1,7 @@
 import AppAvatar from "@/components/AppAvatar";
 import FlexBox from "@/components/common/FlexBox";
 import { AppTextField } from "@/components/common/TextIField";
-import { Text, View } from "@/components/Themed";
+import { View } from "@/components/Themed";
 import { Endpoints } from "@/constants/endpoints";
 import { uploadImage } from "@/helpers/upload-images";
 import AppScrollView from "@/layouts/AppScrollView";
@@ -15,6 +15,7 @@ import { ImagePickerAsset } from "expo-image-picker";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity } from "react-native";
+import { Text, useTheme } from "react-native-paper";
 
 export type Props = NativeStackScreenProps<
   RootStackParamList,
@@ -44,6 +45,7 @@ export default function EditProfile({ navigation }: Props) {
   const dispatch = useAppDispatch();
   const [newAvatar, setNewAvatar] = React.useState<ImagePickerAsset>();
   const [loading, setLoading] = React.useState<boolean>(false);
+  const { colors } = useTheme();
 
   const handleUpdateProfile = handleSubmit(async (data) => {
     setLoading(true);
@@ -72,12 +74,17 @@ export default function EditProfile({ navigation }: Props) {
       headerTitle: "Edit Profile",
       headerRight: () => {
         return (
-          <TouchableOpacity onPress={handleUpdateProfile} disabled={loading}>
+          <TouchableOpacity
+            onPress={handleUpdateProfile}
+            disabled={loading}
+            style={{ marginRight: 20 }}
+          >
             <Text
               style={{
-                color: loading ? "gray" : "#4F8EF7",
-                marginRight: 20,
+                color: colors.primary,
+                fontWeight: 500,
               }}
+              variant="bodyLarge"
             >
               Save
             </Text>

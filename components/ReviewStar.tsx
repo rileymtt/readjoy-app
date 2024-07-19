@@ -4,11 +4,14 @@ import { useAppDispatch } from "@/store/hooks";
 import { put } from "@/utils/api";
 import { IconCarambola } from "@tabler/icons-react-native";
 import React from "react";
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { useTheme } from "react-native-paper";
+import FlexBox from "./common/FlexBox";
 
 export default function ReviewStar({ book }: { book: TBook }) {
   const currentRate = React.useMemo(() => book.rate, [book]);
   const dispatch = useAppDispatch();
+  const { colors } = useTheme();
 
   const handleRate = (rate: number) => {
     dispatch(
@@ -26,13 +29,11 @@ export default function ReviewStar({ book }: { book: TBook }) {
   };
 
   return (
-    <View
+    <FlexBox
       style={{
-        display: "flex",
-        flexDirection: "row",
         marginTop: 20,
         borderWidth: 1,
-        borderColor: "#F075AA",
+        borderColor: colors.tertiary,
         borderRadius: 50,
         width: 170,
         justifyContent: "center",
@@ -49,14 +50,13 @@ export default function ReviewStar({ book }: { book: TBook }) {
       {[1, 2, 3, 4, 5].map((i) => (
         <TouchableOpacity onPress={() => handleRate(i)} key={i}>
           <IconCarambola
-            fill={i <= currentRate ? "#F075AA" : "#fff"}
-            // color={i <= currentRate ? "#F075AA" : "#F075AA"}
-            color="#F075AA"
+            fill={i <= currentRate ? colors.tertiaryContainer : "#fff"}
+            color={colors.tertiary}
             size={17}
             style={{ margin: 7 }}
           />
         </TouchableOpacity>
       ))}
-    </View>
+    </FlexBox>
   );
 }

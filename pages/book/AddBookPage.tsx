@@ -1,10 +1,12 @@
 import AppBookImage from "@/components/AppBookImage";
 import { AppTextField } from "@/components/common/TextIField";
-import { Text } from "@/components/Themed";
+import LoadingModal from "@/components/LoadingModal";
 import { Endpoints } from "@/constants/endpoints";
 import { uploadImage } from "@/helpers/upload-images";
 import AppScrollView from "@/layouts/AppScrollView";
 import { RootStackParamList } from "@/routes/config.routes";
+import { BookReducerHelper } from "@/store/book/book-reducer";
+import { useAppDispatch } from "@/store/hooks";
 import { post } from "@/utils/api";
 import MessageBox from "@/utils/MessageBox";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -14,7 +16,7 @@ import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { Alert, StyleSheet, TouchableOpacity, View } from "react-native";
 import MlkitOcr, { MlkitOcrResult } from "react-native-mlkit-ocr";
-import { TextInput } from "react-native-paper";
+import { Text, TextInput, useTheme } from "react-native-paper";
 
 type FormValues = {
   title: string;
@@ -39,6 +41,8 @@ function AddBookPage({ navigation }: Props) {
     control,
     formState: { errors },
   } = useForm<FormValues>();
+  const { colors } = useTheme();
+  const dispatch = useAppDispatch();
 
   React.useEffect(() => {
     navigation.setOptions({
@@ -51,8 +55,10 @@ function AddBookPage({ navigation }: Props) {
         >
           <Text
             style={{
-              color: loading ? "gray" : "blue",
+              color: colors.primary,
+              fontWeight: 500,
             }}
+            variant="bodyLarge"
           >
             Save
           </Text>
@@ -109,33 +115,36 @@ function AddBookPage({ navigation }: Props) {
   const handleAddBook = async (data: FormValues) => {
     setLoading(true);
     if (imageUri) {
-      const updateImage = await uploadImage(imageUri);
-      data.image = updateImage.data.link;
-    }
-    post(
-      Endpoints.Book,
-      data,
-      () => {
-        MessageBox.showSuccess("Book added successfully");
-        setLoading(false);
-        navigation.goBack();
-      },
-      (error) => {
+      try {
+        const updateImage = await uploadImage(imageUri);
+        data.image = updateImage.data.link;
+        post(
+          Endpoints.Book,
+          data,
+          () => {
+            dispatch(BookReducerHelper.Actions.getBooks());
+            MessageBox.showSuccess("Book added successfully");
+            setLoading(false);
+            navigation.goBack();
+          },
+          (error) => {
+            MessageBox.showError(error.message);
+            setLoading(false);
+          }
+        );
+      } catch (error: any) {
         MessageBox.showError(error.message);
         setLoading(false);
       }
-    );
+    }
   };
 
   return (
     <AppScrollView isMain>
-      <View
-        style={{
-          gap: 24,
-        }}
-      >
+      <View style={styles.container}>
+        {loading && <LoadingModal />}
         <AppBookImage canEdit updateCallback={(e) => setImageUri(e)} />
-        <View style={styles.inputContainer}>
+        <View>
           <Controller
             control={control}
             rules={{
@@ -157,7 +166,7 @@ function AddBookPage({ navigation }: Props) {
             <Text style={styles.errorText}>{errors.title.message}</Text>
           )}
         </View>
-        <View style={styles.inputContainer}>
+        <View>
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -176,7 +185,7 @@ function AddBookPage({ navigation }: Props) {
             <Text style={styles.errorText}>{errors.author.message}</Text>
           )}
         </View>
-        <View style={styles.inputContainer}>
+        <View>
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
@@ -201,7 +210,10 @@ function AddBookPage({ navigation }: Props) {
 }
 
 const styles = StyleSheet.create({
-  inputContainer: {},
+  container: {
+    marginTop: 24,
+    gap: 24,
+  },
   errorText: {
     color: "red",
     textAlign: "center",
